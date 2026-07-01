@@ -6,31 +6,13 @@ import ActivityLog from '../components/ActivityLog';
 import Receipt from '../components/Receipt';
 import { getRoom, saveRoom, saveRoomWithLog } from '../utils/backendStorageUtils';
 
-const POLL_INTERVAL_MS = 3000; // refresh from server every 3 seconds
-
-/**
- * Dashboard page coordinating Cart, Participants, ActivityLog, and Receipt.
- *
- * FIX (sync): The original code used window.addEventListener('storage', ...)
- * which only fires when localStorage changes. Because the backend stores data
- * in db.json via API (not localStorage), that listener never fired — multi-user
- * sync was completely broken. Replaced with a polling interval that re-fetches
- * room state from the server every 3 seconds.
- *
- * FIX (race condition): State mutations now use saveRoomWithLog() which merges
- * the room update and log entry into a single PUT request instead of two
- * sequential calls that could overwrite each other.
- *
- * FIX (silent failures): All mutation handlers now show an error banner if the
- * API call fails (e.g. server not running).
- */
+const POLL_INTERVAL_MS = 3000; 
 export default function Dashboard({ username, roomCode, onLeaveRoom, isDarkMode, toggleDarkMode }) {
   const [roomData, setRoomData] = useState(null);
   const [isReceiptOpen, setIsReceiptOpen] = useState(false);
   const [mutationError, setMutationError] = useState('');
   const pollingRef = useRef(null);
 
-  // ── Load room & start polling ─────────────────────────────────────────────
   const fetchRoom = useCallback(async () => {
     if (!roomCode || !username) return;
     try {
@@ -38,14 +20,14 @@ export default function Dashboard({ username, roomCode, onLeaveRoom, isDarkMode,
       if (!room) return;
       setRoomData(room);
     } catch {
-      // silently ignore poll failures to avoid flashing errors on transient hiccups
+
     }
   }, [roomCode, username]);
 
   useEffect(() => {
     if (!roomCode || !username) return;
 
-    // Initial load: join room if not already a participant
+
     const initialLoad = async () => {
       try {
         const room = await getRoom(roomCode);
@@ -65,7 +47,7 @@ export default function Dashboard({ username, roomCode, onLeaveRoom, isDarkMode,
             ...room,
             participants: [...room.participants, newParticipant]
           };
-          // Save join + log in one call
+        
           const finalRoom = await saveRoomWithLog(roomCode, updatedRoom, username, 'joined', 'the room');
           setRoomData(finalRoom || updatedRoom);
         } else {
@@ -78,19 +60,16 @@ export default function Dashboard({ username, roomCode, onLeaveRoom, isDarkMode,
 
     initialLoad();
 
-    // Start polling — replaces the broken window.storage listener
+  
     pollingRef.current = setInterval(fetchRoom, POLL_INTERVAL_MS);
     return () => clearInterval(pollingRef.current);
   }, [roomCode, username, fetchRoom]);
 
-  // ── Mutation helpers ──────────────────────────────────────────────────────
+
 
   const clearError = () => setMutationError('');
 
-  /**
-   * Saves updated room + log entry in one atomic API call.
-   * Returns the saved room on success, or null on failure.
-   */
+
   const triggerStateUpdate = async (updatedRoom, action, itemName) => {
     try {
       const finalRoom = await saveRoomWithLog(roomCode, updatedRoom, username, action, itemName);
@@ -103,7 +82,7 @@ export default function Dashboard({ username, roomCode, onLeaveRoom, isDarkMode,
     }
   };
 
-  // ── Cart handlers ─────────────────────────────────────────────────────────
+
 
   const handleAddItem = async (itemDetails) => {
     const newItem = {
