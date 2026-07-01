@@ -1,11 +1,7 @@
 import React from 'react';
 import { X, Printer, Calendar, FileText, ShoppingBag, ListChecks } from 'lucide-react';
 
-/**
- * Receipt component that pops up as a modal overlay.
- * It contains print-optimized layouts that isolate the receipt sheet
- * using specific element IDs and browser printing capabilities.
- */
+
 export default function Receipt({ isOpen, onClose, roomCode, items = [], logs = [] }) {
   if (!isOpen) return null;
 
@@ -17,7 +13,7 @@ export default function Receipt({ isOpen, onClose, roomCode, items = [], logs = 
     window.print();
   };
 
-  // Compile a small activity summary for the receipt
+
   const userActionsCount = logs.reduce((acc, log) => {
     acc[log.userName] = (acc[log.userName] || 0) + 1;
     return acc;
