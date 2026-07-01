@@ -1,12 +1,4 @@
-/**
- * Backend persistence wrappers for CartShare.
- * All room state is stored server-side via the REST API (db.json).
- *
- * FIX #1 (race condition): saveRoomWithLog merges the log entry into a
- * single PUT request instead of doing get → save → get → save.
- * FIX #2 (dead localStorage): removed the old window.storage-based sync.
- *   Real-time sync is now driven by polling in Dashboard.jsx.
- */
+
 
 import { createRoomApi, getRoomApi, updateRoomApi } from './api';
 
@@ -49,7 +41,7 @@ export async function saveRoomWithLog(roomCode, updatedRoom, userName, action, i
   return await updateRoomApi(roomCode.toUpperCase(), finalRoom);
 }
 
-// --- User session helpers (localStorage is fine here — it's local-only data) ---
+
 
 export function getCurrentUser() {
   const data = localStorage.getItem('cartshare_user_session');
