@@ -4,16 +4,13 @@ import cors from 'cors';
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Allow all localhost origins (any port) in development.
-// In production, set CORS_ORIGIN env var to your deployed frontend URL.
+
 const corsOrigin = process.env.CORS_ORIGIN || "https://fabulous-longma-607b5d.netlify.app";
 
 app.use(cors({ origin: corsOrigin }));
 app.use(express.json());
 
-// JSONBin config — set these as Railway environment variables:
-//   JSONBIN_BIN_ID  = your bin ID (from jsonbin.io)
-//   JSONBIN_API_KEY = your Master Key (from jsonbin.io)
+
 const BIN_ID = process.env.JSONBIN_BIN_ID;
 const API_KEY = process.env.JSONBIN_API_KEY;
 const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
@@ -51,12 +48,12 @@ async function writeDb(data) {
   }
 }
 
-// Health check
+
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// GET /api/rooms/:roomCode
+
 app.get('/api/rooms/:roomCode', async (req, res) => {
   try {
     const roomCode = req.params.roomCode.toUpperCase();
@@ -69,7 +66,7 @@ app.get('/api/rooms/:roomCode', async (req, res) => {
   }
 });
 
-// POST /api/rooms
+
 app.post('/api/rooms', async (req, res) => {
   try {
     const { roomCode } = req.body;
@@ -95,7 +92,7 @@ app.post('/api/rooms', async (req, res) => {
   }
 });
 
-// PUT /api/rooms/:roomCode
+
 app.put('/api/rooms/:roomCode', async (req, res) => {
   try {
     const roomCode = req.params.roomCode.toUpperCase();
@@ -117,7 +114,7 @@ app.put('/api/rooms/:roomCode', async (req, res) => {
   }
 });
 
-// DELETE /api/rooms/:roomCode
+
 app.delete('/api/rooms/:roomCode', async (req, res) => {
   try {
     const roomCode = req.params.roomCode.toUpperCase();
