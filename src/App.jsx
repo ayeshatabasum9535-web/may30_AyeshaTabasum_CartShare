@@ -15,7 +15,7 @@ export default function App() {
   const [presetRoomCode, setPresetRoomCode] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // 1. Initial Load: theme + session + hash URL
+
   useEffect(() => {
     const savedTheme = localStorage.getItem('cartshare_theme');
     if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -54,7 +54,7 @@ export default function App() {
     return () => window.removeEventListener('hashchange', handleHashAndSession);
   }, []);
 
-  // 2. Dark mode toggle
+
   const toggleDarkMode = () => {
     const nextDark = !isDarkMode;
     setIsDarkMode(nextDark);
@@ -67,25 +67,19 @@ export default function App() {
     }
   };
 
-  // 3. Create a Room
-  // FIX: createRoomInStorage (API call) runs first; if it throws the error
-  // propagates to Home.jsx which shows the error message. Only on success
-  // do we write the session and navigate to the dashboard.
+
   const handleCreateRoom = async (username) => {
     const code = generateRoomCode();
-    // This throws if the server is unreachable — Home.jsx catches it and shows the error
+   
     await createRoomInStorage(code);
-    // Only reached on success:
     const session = { name: username, roomCode: code };
     saveCurrentUser(session);
     setCurrentUser(session);
     window.location.hash = `#/room/${code}`;
   };
 
-  // 4. Join an Existing Room
-  // Validates the room exists before creating a session.
+
   const handleJoinRoom = async (username, roomCode) => {
-    // getRoom throws a 404 if the room doesn't exist — Home.jsx catches it
     await getRoom(roomCode.toUpperCase());
     const session = { name: username, roomCode: roomCode.toUpperCase() };
     saveCurrentUser(session);
@@ -93,7 +87,6 @@ export default function App() {
     window.location.hash = `#/room/${roomCode.toUpperCase()}`;
   };
 
-  // 5. Leave Room
   const handleLeaveRoom = () => {
     clearCurrentUser();
     setCurrentUser(null);
