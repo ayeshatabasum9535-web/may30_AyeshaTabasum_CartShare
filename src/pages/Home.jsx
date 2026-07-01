@@ -25,7 +25,7 @@ export default function Home({ onJoinRoom, onCreateRoom, presetRoomCode = '' }) 
     }
     setIsLoading(true);
     try {
-      // onCreateRoom (App.jsx) throws if the server POST fails
+  
       await onCreateRoom(username.trim());
     } catch (err) {
       setError(
@@ -35,7 +35,7 @@ export default function Home({ onJoinRoom, onCreateRoom, presetRoomCode = '' }) 
       );
       setIsLoading(false);
     }
-    // Don't setIsLoading(false) on success — component unmounts as Dashboard loads
+
   };
 
   const handleJoinRoom = async (e) => {
