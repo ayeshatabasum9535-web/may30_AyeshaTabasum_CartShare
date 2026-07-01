@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { ShoppingCart, Sun, Moon, LogOut, Copy, Check } from 'lucide-react';
 
-/**
- * Navbar component displaying CartShare logo, room info, active user,
- * dark mode toggler, and leave room exit button.
- */
+
 export default function Navbar({ roomCode, username, isDarkMode, toggleDarkMode, onLeaveRoom }) {
   const [copied, setCopied] = useState(false);
 
